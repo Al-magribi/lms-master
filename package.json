@@ -1,0 +1,43 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Template Express Server",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Almagribi/template.git"
+  },
+  "keywords": [
+    "template-express-server"
+  ],
+  "author": "alma dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Almagribi/template/issues"
+  },
+  "homepage": "https://github.com/Almagribi/template#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-useragent": "^1.0.15",
+    "fs": "^0.0.1-security",
+    "geoip-lite": "^1.4.10",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.0",
+    "nodemon": "^3.1.9",
+    "pg": "^8.14.0",
+    "recharts": "^2.15.3",
+    "sweetalert2": "^11.17.2",
+    "uuid": "^11.1.0"
+  },
+  "type": "module"
+}

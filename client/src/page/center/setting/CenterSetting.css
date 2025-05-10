@@ -1,0 +1,92 @@
+.hover-shadow {
+  transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Add smooth transitions for form elements */
+.form-control,
+.input-group-text,
+.btn {
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.btn-success {
+  transition: all 0.2s ease;
+}
+
+.btn-success:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.hover-shadow-lg {
+  transition: all 0.3s ease-in-out !important;
+}
+
+.hover-shadow-lg:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+
+.card {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.card-header {
+  position: relative;
+}
+
+.card-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.card-header h5 {
+  font-size: 1.1rem;
+}
+
+.bg-primary-subtle {
+  background: linear-gradient(
+    135deg,
+    var(--bs-primary-bg-subtle) 0%,
+    #fff 100%
+  );
+}
+
+.bg-info-subtle {
+  background: linear-gradient(135deg, var(--bs-info-bg-subtle) 0%, #fff 100%);
+}
+
+.bg-success-subtle {
+  background: linear-gradient(
+    135deg,
+    var(--bs-success-bg-subtle) 0%,
+    #fff 100%
+  );
+}
+
+@media (max-width: 768px) {
+  .container-fluid {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}

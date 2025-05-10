@@ -1,0 +1,36 @@
+# Allow all web crawlers to access all content
+User-agent: *
+Allow: /
+
+# Sitemap location (you should create this later)
+Sitemap: https://lms.nibs.sch.id/sitemap.xml
+
+# Specify crawl delay to prevent overwhelming your server (optional)
+Crawl-delay: 10
+
+# Disallow admin and sensitive routes
+Disallow: /center-dashboard
+Disallow: /center-satuan
+Disallow: /center-admin
+Disallow: /admin-*
+Disallow: /guru-*
+Disallow: /database/*
+Disallow: /api/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /assets/js/
+Disallow: /assets/css/
+
+# Allow public pages
+Allow: /
+Allow: /siswa-dashboard
+Allow: /siswa-pelajaran
+Allow: /siswa-daftar-ujian
+Allow: /pelajaran/*
+Allow: /tahfiz-dashboard
+Allow: /tahfiz-juz
+Allow: /tahfiz-surah
+Allow: /tahfiz-target
+Allow: /tahfiz-hafalan
+Allow: /tahfiz-laporan
+Allow: /aktivasi-akun/* 

@@ -300,3 +300,11 @@ body {
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.1);
 }
+
+/* Fix dropdown in table being cut off by overflow */
+.table-responsive,
+.table,
+.table-bordered,
+.table-bank-wrapper {
+  overflow: visible !important;
+}

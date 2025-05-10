@@ -13,7 +13,7 @@ import {
 import { toast } from "react-hot-toast";
 import Table from "../../../components/table/Table";
 
-const ReasonsPage = () => {
+const ReasonsPage = ({ homepage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("add");
   const [selectedReason, setSelectedReason] = useState(null);
@@ -132,6 +132,8 @@ const ReasonsPage = () => {
     },
   ];
 
+  console.log(homepage);
+
   return (
     <Layout title='Alasan' levels={["cms"]}>
       <div className='container-fluid py-3 py-md-4'>
@@ -141,12 +143,19 @@ const ReasonsPage = () => {
           transition={{ duration: 0.5 }}>
           <div className='d-flex justify-content-between align-items-center mb-2'>
             <div className='d-flex align-items-center'>
-              <div className='bg-primary bg-opacity-10 p-3 rounded me-3'>
-                <i className='bi bi-lightbulb text-primary fs-4'></i>
+              <div
+                className=' p-3 rounded me-3'
+                style={{
+                  color: homepage?.primary_color,
+                  backgroundColor: homepage?.secondary_color,
+                }}>
+                <i className='bi bi-lightbulb fs-4'></i>
               </div>
               <h4 className='mb-0'>Alasan</h4>
             </div>
-            <button className='btn btn-sm btn-primary' onClick={handleAdd}>
+            <button
+              className='btn btn-sm btn-outline-primary'
+              onClick={handleAdd}>
               <i className='bi bi-plus-circle'></i>
               <span className='ms-2'>Tambah Alasan</span>
             </button>
@@ -186,7 +195,12 @@ const ReasonsPage = () => {
                             {(page - 1) * limit + index + 1}
                           </td>
                           <td className='text-center align-middle'>
-                            <div className='rounded-circle bg-primary bg-opacity-10 p-3 me-3 text-primary'>
+                            <div
+                              className='rounded-circle p-3 me-3'
+                              style={{
+                                color: homepage?.primary_color,
+                                backgroundColor: homepage?.secondary_color,
+                              }}>
                               <IconComponent className='fs-2' />
                             </div>
                           </td>

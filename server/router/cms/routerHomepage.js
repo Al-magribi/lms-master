@@ -8,30 +8,49 @@ const create = "Berhasil disimpan";
 const update = "berhasil diperbarui";
 const remove = "Berhasil dihapus";
 
-const imageStorage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./server/assets/cms");
+    cb(null, "public/assets/cms");
   },
-
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(
       null,
-      path.parse(file.originalname).name +
-        "-" +
-        Date.now() +
-        path.extname(file.originalname)
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
     );
   },
 });
 
-const uploadImage = multer({ storage: imageStorage });
+const uploadImage = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!allowedTypes.includes(file.mimetype)) {
+      cb(
+        new Error("Format file tidak didukung. Gunakan JPG, PNG, atau GIF"),
+        false
+      );
+      return;
+    }
+    cb(null, true);
+  },
+  limits: {
+    fileSize: 2 * 1024 * 1024, // 2MB limit
+  },
+});
+
+const uploadFields = uploadImage.fields([
+  { name: "icon", maxCount: 1 },
+  { name: "logo", maxCount: 1 },
+  { name: "banner", maxCount: 1 },
+]);
 
 const router = express.Router();
 
 router.put(
-  "/udpate-homepage",
+  "/update-homepage",
   authorize("cms"),
-  uploadImage.single("logo"),
+  uploadFields,
   async (req, res) => {
     const client = await pool.connect();
 
@@ -66,31 +85,22 @@ router.put(
         secondary_color,
       } = req.body;
 
+      // Handle image paths
+      let iconPath = req.body.icon; // Default to existing icon path
       let logoPath = req.body.logo; // Default to existing logo path
+      let bannerPath = req.body.banner; // Default to existing banner path
 
-      // If a new logo file was uploaded, use its path
-      if (req.file) {
-        // Validate file type
-        const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-        if (!allowedTypes.includes(req.file.mimetype)) {
-          return res.status(400).json({
-            success: false,
-            message:
-              "Format file logo tidak didukung. Gunakan JPG, PNG, atau GIF",
-            data: null,
-          });
+      // Update paths if new files were uploaded
+      if (req.files) {
+        if (req.files.icon) {
+          iconPath = "/assets/cms/" + req.files.icon[0].filename;
         }
-
-        // Validate file size (max 2MB)
-        if (req.file.size > 2 * 1024 * 1024) {
-          return res.status(400).json({
-            success: false,
-            message: "Ukuran file logo terlalu besar. Maksimal 2MB",
-            data: null,
-          });
+        if (req.files.logo) {
+          logoPath = "/assets/cms/" + req.files.logo[0].filename;
         }
-
-        logoPath = "/assets/cms/" + req.file.filename;
+        if (req.files.banner) {
+          bannerPath = "/assets/cms/" + req.files.banner[0].filename;
+        }
       }
 
       const query = `
@@ -104,14 +114,16 @@ router.put(
           instagram = $6,
           facebook = $7,
           ppdb_url = $8,
-          logo = $9,
-          address = $10,
-          title_reason = $11,
-          desc_reason = $12,
-          title_facility = $13,
-          desc_facility = $14,
-          primary_color = $15,
-          secondary_color = $16
+          icon = $9,
+          logo = $10,
+          banner = $11,
+          address = $12,
+          title_reason = $13,
+          desc_reason = $14,
+          title_facility = $15,
+          desc_facility = $16,
+          primary_color = $17,
+          secondary_color = $18
         WHERE id = 1
         RETURNING *
       `;
@@ -125,7 +137,9 @@ router.put(
         instagram,
         facebook,
         ppdb_url,
+        iconPath,
         logoPath,
+        bannerPath,
         address,
         title_reason,
         desc_reason,
@@ -138,12 +152,17 @@ router.put(
       const result = await client.query(query, values);
 
       res.status(200).json({
-        message: update,
+        success: true,
+        message: "Data berhasil diperbarui",
         data: result.rows[0],
       });
     } catch (error) {
       console.error("Error in homepage update:", error);
-      res.status(500).json({ message: error.message });
+      res.status(500).json({
+        success: false,
+        message: "Terjadi kesalahan saat memperbarui data",
+        error: error.message,
+      });
     } finally {
       if (client) {
         client.release();
@@ -216,7 +235,9 @@ router.get("/get-data", async (req, res) => {
           desc_facility,
           primary_color,
           secondary_color,
-          createdat
+          createdat,
+          icon,
+          banner
         FROM cms_homepage
         WHERE id = $1
       `,

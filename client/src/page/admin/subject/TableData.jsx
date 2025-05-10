@@ -6,9 +6,8 @@ import {
 } from "../../../controller/api/admin/ApiSubject";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useGetAppQuery } from "../../../controller/api/center/ApiApp";
 
-const TableData = ({ setDetail }) => {
+const TableData = ({ setDetail, homepage }) => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -19,7 +18,6 @@ const TableData = ({ setDetail }) => {
     limit,
     search,
   });
-  const { data: app } = useGetAppQuery();
 
   const { totalData, totalPages, subjects = [] } = rawData;
   const [deleteSubject, { isSuccess, isLoading, isError, reset }] =
@@ -62,74 +60,70 @@ const TableData = ({ setDetail }) => {
       setSearch={setSearch}
       totalData={totalData}
       totalPages={totalPages}
-      isLoading={dataLoading}
-    >
-      <table className="table table-bordered table-hover">
+      isLoading={dataLoading}>
+      <table className='table table-bordered table-hover'>
         <thead>
           <tr>
-            <th className="text-center">No</th>
-            <th className="text-center">Cover</th>
-            <th className="text-center">Mata Pelajaran</th>
-            <th className="text-center">Guru Pengampu</th>
-            <th className="text-center">Aksi</th>
+            <th className='text-center'>No</th>
+            <th className='text-center'>Cover</th>
+            <th className='text-center'>Mata Pelajaran</th>
+            <th className='text-center'>Guru Pengampu</th>
+            <th className='text-center'>Aksi</th>
           </tr>
         </thead>
         <tbody>
           {subjects?.length > 0 ? (
             subjects?.map((subject, i) => (
               <tr key={i}>
-                <td className="text-center align-middle">
+                <td className='text-center align-middle'>
                   {(page - 1) * limit + i + 1}
                 </td>
-                <td className="text-center align-middle">
+                <td className='text-center align-middle'>
                   <img
-                    src={subject.cover ? subject.cover : app?.logo}
+                    src={subject.cover ? subject.cover : homepage?.icon}
                     alt={`cover-${subject.name}`}
                     width={65}
                     height={80}
-                    className="overflow-hidden rounded"
+                    className='overflow-hidden rounded'
                     style={{ objectFit: "cover" }}
                   />
                 </td>
-                <td className="align-middle">{subject.name}</td>
-                <td className="align-middle d-flex flex-column gap-2">
+                <td className='align-middle'>{subject.name}</td>
+                <td className='align-middle d-flex flex-column gap-2'>
                   {subject.teachers.map((teacher, i) => (
-                    <div key={i} className="d-flex flex-column">
-                      <p className="m-0">
+                    <div key={i} className='d-flex flex-column'>
+                      <p className='m-0'>
                         {teacher.name}{" "}
-                        <span className="text-secondary">{`(${
+                        <span className='text-secondary'>{`(${
                           teacher.class?.length > 0
                             ? teacher.class?.map((item) => item.name).join(", ")
                             : "Data belum tersedia"
                         })`}</span>
                       </p>
-                      <div className="d-flex gap-2 text-secondary">
-                        <p className="m-0">{teacher.chapters} Chapter</p>
-                        <p className="m-0">{teacher.contents} Materi</p>
+                      <div className='d-flex gap-2 text-secondary'>
+                        <p className='m-0'>{teacher.chapters} Chapter</p>
+                        <p className='m-0'>{teacher.contents} Materi</p>
                       </div>
                     </div>
                   ))}
                 </td>
-                <td className="text-cente align-middle">
-                  <div className="d-flex justify-content-center gap-2">
+                <td className='text-cente align-middle'>
+                  <div className='d-flex justify-content-center gap-2'>
                     <button
-                      className="btn btn-sm btn-primary"
-                      onClick={() => goToLink(subject.name, subject.id)}
-                    >
-                      <i className="bi bi-three-dots-vertical"></i>
+                      className='btn btn-sm btn-primary'
+                      onClick={() => goToLink(subject.name, subject.id)}>
+                      <i className='bi bi-three-dots-vertical'></i>
                     </button>
                     <button
-                      className="btn btn-sm btn-warning"
-                      onClick={() => setDetail(subject)}
-                    >
-                      <i className="bi bi-pencil-square"></i>
+                      className='btn btn-sm btn-warning'
+                      onClick={() => setDetail(subject)}>
+                      <i className='bi bi-pencil-square'></i>
                     </button>
                     <button
-                      className="btn btn-sm btn-danger"
+                      className='btn btn-sm btn-danger'
                       disabled={isLoading}
-                      onClick={() => deleteHandler(subject.id)}
-                    >
-                      <i className="bi bi-folder-minus"></i>
+                      onClick={() => deleteHandler(subject.id)}>
+                      <i className='bi bi-folder-minus'></i>
                     </button>
                   </div>
                 </td>

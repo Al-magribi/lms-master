@@ -12,7 +12,7 @@ import {
 import { toast } from "react-hot-toast";
 import Table from "../../../components/table/Table";
 
-const TestimonialsPage = () => {
+const TestimonialsPage = ({ homepage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("add");
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
@@ -119,28 +119,35 @@ const TestimonialsPage = () => {
   ];
 
   return (
-    <Layout title="Testimoni" levels={["cms"]}>
-      <div className="container-fluid py-3 py-md-4">
+    <Layout title='Testimoni' levels={["cms"]}>
+      <div className='container-fluid py-3 py-md-4'>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <div className="d-flex align-items-center">
-              <div className="bg-primary bg-opacity-10 p-3 rounded me-3">
-                <FaIcons.FaComments className="text-primary fs-4" />
+          transition={{ duration: 0.5 }}>
+          <div className='d-flex justify-content-between align-items-center mb-2'>
+            <div className='d-flex align-items-center'>
+              <div
+                className='p-3 rounded me-3'
+                style={{
+                  color: homepage?.primary_color,
+                  backgroundColor: homepage?.secondary_color,
+                }}>
+                <FaIcons.FaComments className='fs-4' />
               </div>
-              <h4 className="mb-0">Testimoni</h4>
+              <h4 className='mb-0'>Testimoni</h4>
             </div>
-            <button className="btn btn-sm btn-primary" onClick={handleAdd}>
-              <i className="bi bi-plus-circle"></i>
-              <span className="ms-2">Tambah Testimoni</span>
+            <button
+              outline-
+              className='btn btn-sm btn-outline-primary'
+              onClick={handleAdd}>
+              <i className='bi bi-plus-circle'></i>
+              <span className='ms-2'>Tambah Testimoni</span>
             </button>
           </div>
 
-          <div className="card border-0 shadow-sm">
-            <div className="card-body">
+          <div className='card border-0 shadow-sm'>
+            <div className='card-body'>
               <Table
                 isLoading={isLoading}
                 page={page}
@@ -149,44 +156,41 @@ const TestimonialsPage = () => {
                 limit={limit}
                 setLimit={setLimit}
                 setSearch={setSearch}
-                totalData={totalData}
-              >
-                <table className="mb-0 table table-bordered table-striped table-hover">
+                totalData={totalData}>
+                <table className='mb-0 table table-bordered table-striped table-hover'>
                   <thead>
                     <tr>
-                      <th className="text-center align-middle">No</th>
-                      <th className="text-center align-middle">Nama</th>
-                      <th className="text-center align-middle">Deskripsi</th>
-                      <th className="text-center align-middle">Testimoni</th>
-                      <th className="text-center align-middle">Aksi</th>
+                      <th className='text-center align-middle'>No</th>
+                      <th className='text-center align-middle'>Nama</th>
+                      <th className='text-center align-middle'>Deskripsi</th>
+                      <th className='text-center align-middle'>Testimoni</th>
+                      <th className='text-center align-middle'>Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
                     {testimonials?.map((testimonial, index) => (
                       <tr key={testimonial.id}>
-                        <td className="text-center align-middle">
+                        <td className='text-center align-middle'>
                           {(page - 1) * limit + index + 1}
                         </td>
-                        <td className="align-middle">{testimonial.name}</td>
-                        <td className="align-middle">
+                        <td className='align-middle'>{testimonial.name}</td>
+                        <td className='align-middle'>
                           {testimonial.description}
                         </td>
-                        <td className="align-middle">
+                        <td className='align-middle'>
                           {testimonial.testimonial}
                         </td>
-                        <td className="text-center align-middle">
-                          <div className="d-flex align-items-center justify-content-center gap-2">
+                        <td className='text-center align-middle'>
+                          <div className='d-flex align-items-center justify-content-center gap-2'>
                             <button
-                              className="btn btn-sm btn-warning"
-                              onClick={() => handleEdit(testimonial)}
-                            >
-                              <i className="bi bi-pencil-square"></i>
+                              className='btn btn-sm btn-warning'
+                              onClick={() => handleEdit(testimonial)}>
+                              <i className='bi bi-pencil-square'></i>
                             </button>
                             <button
-                              className="btn btn-sm btn-danger"
-                              onClick={() => handleDelete(testimonial.id)}
-                            >
-                              <i className="bi bi-trash"></i>
+                              className='btn btn-sm btn-danger'
+                              onClick={() => handleDelete(testimonial.id)}>
+                              <i className='bi bi-trash'></i>
                             </button>
                           </div>
                         </td>
@@ -203,8 +207,7 @@ const TestimonialsPage = () => {
       <CmsModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={modalType === "add" ? "Tambah Testimoni" : "Edit Testimoni"}
-      >
+        title={modalType === "add" ? "Tambah Testimoni" : "Edit Testimoni"}>
         <CmsForm
           key={formKey}
           fields={formFields}
@@ -220,7 +223,7 @@ const TestimonialsPage = () => {
           submitButtonText={
             modalType === "add" ? "Tambah Testimoni" : "Ubah Testimoni"
           }
-          cancelButtonText="Batal"
+          cancelButtonText='Batal'
           isLoading={addLoading}
         />
       </CmsModal>

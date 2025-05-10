@@ -13,7 +13,7 @@ import {
 } from "../../../controller/api/cms/ApiCategory";
 import Table from "../../../components/table/Table";
 
-const CategoriesPage = () => {
+const CategoriesPage = ({ homepage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("add");
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -118,12 +118,19 @@ const CategoriesPage = () => {
           transition={{ duration: 0.5 }}>
           <div className='d-flex justify-content-between align-items-center mb-4'>
             <div className='d-flex align-items-center'>
-              <div className='bg-primary bg-opacity-10 p-3 rounded me-3'>
-                <FaTags className='text-primary fs-4' />
+              <div
+                className='p-3 rounded me-3'
+                style={{
+                  color: homepage?.primary_color,
+                  backgroundColor: homepage?.secondary_color,
+                }}>
+                <FaTags className='fs-4' />
               </div>
               <h4 className='mb-0'>Kategori</h4>
             </div>
-            <button className='btn btn-sm btn-primary' onClick={handleAdd}>
+            <button
+              className='btn btn-sm btn-outline-primary'
+              onClick={handleAdd}>
               <span className='bi bi-plus-circle'></span>
               <span className='ms-2'>Tambah Kategori</span>
             </button>

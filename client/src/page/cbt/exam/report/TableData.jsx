@@ -88,160 +88,213 @@ const TableData = forwardRef(({ classid, examid }, ref) => {
     }
   };
 
-  console.log(result);
-
   return (
-    <>
-      <Table
-        isLoading={isLoading}
-        page={page}
-        setPage={setPage}
-        totalPages={totalPages}
-        limit={limit}
-        setLimit={setLimit}
-        setSearch={setSearch}
-        totalData={totalData}
-      >
-        <table
-          ref={tableRef}
-          className="table table-striped table-hover table-bordered"
-        >
-          <thead className="table-light">
-            <tr>
-              <th scope="col" className="text-center">
-                No
-              </th>
-              <th scope="col" className="text-center">
-                NIS
-              </th>
-              <th scope="col" className="text-center">
-                Nama Siswa
-              </th>
-              <th scope="col" className="text-center">
-                Kelas
-              </th>
-              <th scope="col" className="text-center">
-                Tingkat
-              </th>
-              <th scope="col" className="text-center">
-                IP Address
-              </th>
-              <th scope="col" className="text-center">
-                Browser
-              </th>
-              <th scope="col" className="text-center">
-                Waktu Mulai
-              </th>
-              <th scope="col" className="text-center">
-                Status
-              </th>
-              <th scope="col" className="text-center">
-                Aksi
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {result.length > 0 ? (
-              result.map((item, index) => (
-                <tr key={item.student_id || index}>
-                  <td className="text-center align-middle">
-                    {(page - 1) * limit + index + 1}
-                  </td>
-                  <td className="text-center align-middle">{item.nis}</td>
-                  <td className="align-middle">{item.student_name}</td>
-                  <td className="text-center align-middle">
-                    {item.class_name}
-                  </td>
-                  <td className="text-center align-middle">
-                    {item.grade_name}
-                  </td>
-                  <td className="text-center align-middle">{item.ip || "-"}</td>
-                  <td className="text-center align-middle">
-                    {item.browser || "-"}
-                  </td>
-                  <td className="text-center align-middle">
-                    {item.createdat ? (
-                      <span className="badge bg-success">
-                        {new Date(item.createdat).toLocaleString()}
-                      </span>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  <td className="text-center align-middle">
-                    {item.ispenalty ? (
-                      <span className="badge bg-danger">Melanggar</span>
-                    ) : item.isactive ? (
-                      <span className="badge bg-warning">Mengerjakan</span>
-                    ) : item.isdone ? (
-                      <span className="badge bg-success">Selesai</span>
-                    ) : (
-                      <span className="badge bg-secondary">Belum Masuk</span>
-                    )}
-                  </td>
-                  <td className="text-center align-middle">
-                    <div className="d-flex justify-content-center gap-2">
-                      <button
-                        className="btn btn-sm btn-primary"
-                        title="Lihat Detail"
-                        data-bs-toggle="modal"
-                        data-bs-target="#answerSheet"
-                        onClick={() => setDetail(item)}
-                      >
-                        <i className="bi bi-eye"></i>
-                        <span className="ms-2">Lihat</span>
-                      </button>
-
-                      <button
-                        className="btn btn-sm btn-warning"
-                        title="Izinkan Masuk"
-                        onClick={() => handleRejoin(item.log_id)}
-                        disabled={rejoinLoad || !item.isactive}
-                      >
-                        <i className="bi bi-arrow-repeat"></i>
-                        <span className="ms-2">Izinkan</span>
-                      </button>
-
-                      <button
-                        className="btn btn-sm btn-success"
-                        title="Selesaikan"
-                        onClick={() => hanldeFinish(item.log_id)}
-                        disabled={finishLoad || item.isdone || !item.isactive}
-                      >
-                        <i className="bi bi-check-circle"></i>
-                        <span className="ms-2">Selesaikan</span>
-                      </button>
-
-                      <button
-                        className="btn btn-sm btn-danger"
-                        title="Ulangi Ujian"
-                        onClick={() =>
-                          handleRetake(item.log_id, item.student_id)
-                        }
-                        disabled={retakeLoad || !item.isdone}
-                      >
-                        <i className="bi bi-recycle"></i>
-                        <span className="ms-2">Ulangi</span>
-                      </button>
-                    </div>
-                  </td>
+    <div className='card shadow-sm'>
+      <div className='card-body p-0'>
+        <Table
+          isLoading={isLoading}
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
+          limit={limit}
+          setLimit={setLimit}
+          setSearch={setSearch}
+          totalData={totalData}>
+          <div className='table-responsive'>
+            <table
+              ref={tableRef}
+              className='table table-striped table-hover table-bordered align-middle mb-0'>
+              <thead className='table-light'>
+                <tr>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "5%" }}>
+                    No
+                  </th>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "10%" }}>
+                    NIS
+                  </th>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "15%" }}>
+                    Nama Siswa
+                  </th>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "10%" }}>
+                    Kelas
+                  </th>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "10%" }}>
+                    Tingkat
+                  </th>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "10%" }}>
+                    IP Address
+                  </th>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "10%" }}>
+                    Browser
+                  </th>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "15%" }}>
+                    Waktu Mulai
+                  </th>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "10%" }}>
+                    Status
+                  </th>
+                  <th
+                    scope='col'
+                    className='text-center'
+                    style={{ width: "15%" }}>
+                    Aksi
+                  </th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="10" className="text-center">
-                  {isLoading
-                    ? "Memuat data..."
-                    : "Tidak ada data yang ditemukan"}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </Table>
+              </thead>
+              <tbody>
+                {result.length > 0 ? (
+                  result.map((item, index) => (
+                    <tr key={item.student_id || index}>
+                      <td className='text-center'>
+                        {(page - 1) * limit + index + 1}
+                      </td>
+                      <td className='text-center'>{item.nis}</td>
+                      <td>{item.student_name}</td>
+                      <td className='text-center'>{item.class_name}</td>
+                      <td className='text-center'>{item.grade_name}</td>
+                      <td className='text-center'>{item.ip || "-"}</td>
+                      <td className='text-center'>{item.browser || "-"}</td>
+                      <td className='text-center'>
+                        {item.createdat ? (
+                          <span className='badge bg-success px-3 py-2'>
+                            {new Date(item.createdat).toLocaleString()}
+                          </span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className='text-center'>
+                        {item.ispenalty ? (
+                          <span className='badge bg-danger px-3 py-2'>
+                            Melanggar
+                          </span>
+                        ) : item.isactive ? (
+                          <span className='badge bg-warning px-3 py-2'>
+                            Mengerjakan
+                          </span>
+                        ) : item.isdone ? (
+                          <span className='badge bg-success px-3 py-2'>
+                            Selesai
+                          </span>
+                        ) : (
+                          <span className='badge bg-secondary px-3 py-2'>
+                            Belum Masuk
+                          </span>
+                        )}
+                      </td>
+                      <td className='text-center'>
+                        <div className='dropdown'>
+                          <button
+                            className='btn btn-sm btn-outline-primary dropdown-toggle px-3'
+                            type='button'
+                            data-bs-toggle='dropdown'
+                            aria-expanded='false'>
+                            Pilih Aksi
+                          </button>
+                          <ul className='dropdown-menu dropdown-menu-end shadow-sm'>
+                            <li>
+                              <button
+                                className='dropdown-item d-flex align-items-center py-2'
+                                title='Lihat Detail'
+                                data-bs-toggle='modal'
+                                data-bs-target='#answerSheet'
+                                onClick={() => setDetail(item)}>
+                                <i className='bi bi-eye me-2'></i>
+                                <span>Lihat</span>
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className='dropdown-item d-flex align-items-center py-2'
+                                title='Izinkan Masuk'
+                                onClick={() => handleRejoin(item.log_id)}
+                                disabled={rejoinLoad || !item.isactive}>
+                                <i className='bi bi-arrow-repeat me-2'></i>
+                                <span>Izinkan</span>
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className='dropdown-item d-flex align-items-center py-2'
+                                title='Selesaikan'
+                                onClick={() => hanldeFinish(item.log_id)}
+                                disabled={
+                                  finishLoad || item.isdone || !item.isactive
+                                }>
+                                <i className='bi bi-check-circle me-2'></i>
+                                <span>Selesaikan</span>
+                              </button>
+                            </li>
+                            <li>
+                              <button
+                                className='dropdown-item d-flex align-items-center py-2'
+                                title='Ulangi Ujian'
+                                onClick={() =>
+                                  handleRetake(item.log_id, item.student_id)
+                                }
+                                disabled={retakeLoad || !item.isdone}>
+                                <i className='bi bi-recycle me-2'></i>
+                                <span>Ulangi</span>
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan='10' className='text-center py-4'>
+                      {isLoading ? (
+                        <div className='d-flex justify-content-center align-items-center'>
+                          <div
+                            className='spinner-border text-primary'
+                            role='status'>
+                            <span className='visually-hidden'>Loading...</span>
+                          </div>
+                          <span className='ms-2'>Memuat data...</span>
+                        </div>
+                      ) : (
+                        "Tidak ada data yang ditemukan"
+                      )}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Table>
+      </div>
 
       <AnswerSheet detail={detail} />
-    </>
+    </div>
   );
 });
 

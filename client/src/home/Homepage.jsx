@@ -12,11 +12,9 @@ const Testimonials = lazy(() => import("./components/Testimonials"));
 const Footer = lazy(() => import("./components/Footer"));
 const Infographic = lazy(() => import("./components/Infographic"));
 
-import { useGetHomepageQuery } from "../controller/api/cms/ApiHomepage";
 import LoadingScreen from "../components/loader/LoadingScreen";
 
-const Homepage = () => {
-  const { data, isLoading } = useGetHomepageQuery();
+const Homepage = ({ data, isLoading }) => {
   const [trackVisitor] = useTrackVisitorMutation();
 
   useEffect(() => {

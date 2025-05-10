@@ -32,7 +32,9 @@ router.get("/get-class", authorize("admin", "teacher"), async (req, res) => {
       client.query({
         text: `
 					SELECT a_class.*, a_grade.name AS grade_name, a_major.name AS major_name,
-					COUNT(DISTINCT CASE WHEN u_students.isactive = true AND u_students.periode = $5 THEN cl_students.id END) AS students
+					COUNT(DISTINCT CASE WHEN u_students.isactive = true AND u_students.periode = $5 THEN cl_students.id END) AS students,
+          COUNT(CASE WHEN u_students.gender = 'L' THEN 1 END) AS male_count,
+          COUNT(CASE WHEN u_students.gender = 'P' THEN 1 END) AS female_count
 					FROM a_class
 					LEFT JOIN a_grade ON a_class.grade = a_grade.id 
 					LEFT JOIN a_major ON a_class.major = a_major.id
@@ -327,7 +329,7 @@ router.post("/upload-students", authorize("admin"), async (req, res) => {
       });
     }
 
-    res.status(200).json({ message: "Students uploaded successfully" });
+    res.status(200).json({ message: "Siswa berhasil ditambahkan" });
   } catch (error) {
     await client.query("ROLLBACK");
     console.log(error);

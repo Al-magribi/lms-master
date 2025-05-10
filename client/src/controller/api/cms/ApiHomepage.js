@@ -14,10 +14,16 @@ export const ApiHomepage = createApi({
     }),
     updateHomepage: builder.mutation({
       query: (data) => ({
-        url: "/udpate-homepage",
+        url: "/update-homepage",
         method: "PUT",
         body: data,
         formData: true,
+        validateStatus: (response, result) =>
+          response.status === 200 && result.success,
+      }),
+      transformErrorResponse: (response) => ({
+        status: response.status,
+        message: response.data?.message || "Gagal menyimpan pengaturan",
       }),
       invalidatesTags: ["Homepage"],
     }),

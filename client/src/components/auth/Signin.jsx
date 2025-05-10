@@ -7,12 +7,10 @@ import { setLogin } from "../../controller/slice/AuthSlice";
 import "./Index.css";
 import { useGetAppQuery } from "../../controller/api/center/ApiApp";
 
-const Signin = () => {
+const Signin = ({ data: metric }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, isSignin } = useSelector((state) => state.auth);
-
-  const { data: app } = useGetAppQuery();
 
   const routes = {
     center: "/center-dashboard",
@@ -158,13 +156,15 @@ const Signin = () => {
       <div
         className='d-flex align-items-center justify-content-center flex-column gap-3'
         style={{ height: "100vh" }}>
-        <img
-          src={app?.logo ? app?.logo : "/logo.png"}
-          alt='logo'
-          style={{ height: 120, width: 120, marginBottom: "1rem" }}
-          className='pointer'
-          onClick={() => (window.location.href = "/")}
-        />
+        {metric?.icon && (
+          <img
+            src={metric?.icon}
+            alt='logo'
+            style={{ height: 120, width: 120, marginBottom: "1rem" }}
+            className='pointer'
+            onClick={() => (window.location.href = "/")}
+          />
+        )}
 
         {role === "none" && (
           <div className='d-flex flex-wrap justify-content-center gap-3'>

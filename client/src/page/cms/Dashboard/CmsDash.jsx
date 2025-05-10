@@ -130,7 +130,7 @@ const CmsDash = () => {
   };
 
   return (
-    <Layout title='Dashboard' levels={["cms"]}>
+    <Layout title='CMS Dashboard' levels={["cms"]}>
       <div className='container-fluid py-3 py-md-4'>
         <motion.div
           className='row g-3 g-md-4'

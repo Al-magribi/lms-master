@@ -1,15 +1,30 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import PropTypes from "prop-types";
+
+// Components
 import Table from "../../../components/table/Table";
+
+// API Hooks
 import {
   useDeleteBankMutation,
   useGetBankQuery,
 } from "../../../controller/api/cbt/ApiBank";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+
+// Constants
+const TABLE_COLUMNS = [
+  { key: "no", label: "No", className: "text-center" },
+  { key: "teacher", label: "Guru", className: "align-middle" },
+  { key: "subject", label: "Mata Pelajaran", className: "align-middle" },
+  { key: "bank", label: "Bank Soal", className: "align-middle" },
+  { key: "type", label: "Jenis", className: "text-center align-middle" },
+  { key: "questions", label: "Soal", className: "text-center align-middle" },
+  { key: "actions", label: "Aksi", className: "text-center align-middle" },
+];
 
 const TableBank = ({ setDetail }) => {
   const navigate = useNavigate();
-
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState("");
@@ -46,6 +61,91 @@ const TableBank = ({ setDetail }) => {
     navigate(`/admin-cbt-bank/${subjectFormat}/${nameFormat}/${id}`);
   };
 
+  const renderTableHeader = () => (
+    <thead>
+      <tr>
+        {TABLE_COLUMNS.map((column) => (
+          <th key={column.key} className={column.className}>
+            {column.label}
+          </th>
+        ))}
+      </tr>
+    </thead>
+  );
+
+  const renderTableBody = () => (
+    <tbody>
+      {banks?.length > 0 ? (
+        banks?.map((item, i) => (
+          <tr key={item.id || i}>
+            <td className='text-center align-middle'>
+              {(page - 1) * limit + i + 1}
+            </td>
+            <td className='align-middle'>{item.teacher_name}</td>
+            <td className='align-middle'>{item.subject_name}</td>
+            <td className='align-middle'>{item.name}</td>
+            <td className='text-center align-middle'>
+              <span className='badge bg-success'>
+                {item.btype.toUpperCase()}
+              </span>
+            </td>
+            <td className='text-center align-middle'>
+              <span className='badge bg-secondary'>
+                {`${item.question_count} Soal`}
+              </span>
+            </td>
+            <td className='text-center align-middle'>
+              <div className='dropdown'>
+                <button
+                  className='btn btn-sm btn-outline-primary dropdown-toggle'
+                  type='button'
+                  data-bs-toggle='dropdown'
+                  aria-expanded='false'>
+                  Pilih Aksi
+                </button>
+                <ul className='dropdown-menu'>
+                  <li>
+                    <button
+                      className='dropdown-item text-primary'
+                      onClick={() =>
+                        goToLink(item.subject_name, item.name, item.id)
+                      }>
+                      <i className='bi bi-folder-fill me-2'></i>
+                      Lihat
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className='dropdown-item text-warning'
+                      onClick={() => setDetail(item)}>
+                      <i className='bi bi-pencil-square me-2'></i>
+                      Edit
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className='dropdown-item text-danger'
+                      disabled={isLoading}
+                      onClick={() => deleteHandler(item.id)}>
+                      <i className='bi bi-folder-minus me-2'></i>
+                      Hapus
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan={TABLE_COLUMNS.length} className='text-center'>
+            Data belum tersedia
+          </td>
+        </tr>
+      )}
+    </tbody>
+  );
+
   return (
     <Table
       page={page}
@@ -54,81 +154,17 @@ const TableBank = ({ setDetail }) => {
       setSearch={setSearch}
       totalData={totalData}
       totalPages={totalPages}
-      isLoading={dataLoading}
-    >
-      <table className="table table-bordered table-striped table-hover m-0">
-        <thead>
-          <tr>
-            <th className="text-center">No</th>
-            <th className="text-center">Guru</th>
-            <th className="text-center">Mata Pelajaran</th>
-            <th className="text-center">Bank Soal</th>
-            <th className="text-center">Jenis</th>
-            <th className="text-center">Soal</th>
-            <th style={{ width: 250 }} className="text-center">
-              Aksi
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {banks?.length > 0 ? (
-            banks?.map((item, i) => (
-              <tr key={i}>
-                <td className="text-center align-middle">
-                  {(page - 1) * limit + i + 1}
-                </td>
-                <td className="align-middle">{item.teacher_name}</td>
-                <td className="align-middle">{item.subject_name}</td>
-                <td className="align-middle">{item.name}</td>
-                <td className="text-center align-middle">
-                  <p className="m-0 badge bg-success">
-                    {item.btype.toUpperCase()}
-                  </p>
-                </td>
-                <td className="text-center align-middle">
-                  <p className="m-0 badge bg-secondary">
-                    {`${item.question_count} Soal`}
-                  </p>
-                </td>
-                <td className="text-center align-middle">
-                  <div className="d-flex justify-content-center gap-1">
-                    <button
-                      className="btn btn-sm btn-primary"
-                      onClick={() =>
-                        goToLink(item.subject_name, item.name, item.id)
-                      }
-                    >
-                      <i className="bi bi-folder-fill"></i>
-                      <span className="ms-2">Lihat</span>
-                    </button>
-                    <button
-                      className="btn btn-sm btn-warning"
-                      onClick={() => setDetail(item)}
-                    >
-                      <i className="bi bi-pencil-square"></i>
-                      <span className="ms-2">Edit </span>
-                    </button>
-                    <button
-                      className="btn btn-sm btn-danger"
-                      disabled={isLoading}
-                      onClick={() => deleteHandler(item.id)}
-                    >
-                      <i className="bi bi-folder-minus"></i>
-                      <span className="ms-2">Hapus</span>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={7}>Data belum tersedia</td>
-            </tr>
-          )}
-        </tbody>
+      isLoading={dataLoading}>
+      <table className='table table-bordered table-striped table-hover m-0'>
+        {renderTableHeader()}
+        {renderTableBody()}
       </table>
     </Table>
   );
+};
+
+TableBank.propTypes = {
+  setDetail: PropTypes.func.isRequired,
 };
 
 export default TableBank;

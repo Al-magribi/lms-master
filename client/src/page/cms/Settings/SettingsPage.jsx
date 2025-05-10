@@ -14,6 +14,10 @@ const SettingsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [logoPreview, setLogoPreview] = useState(null);
   const [logoFile, setLogoFile] = useState(null);
+  const [iconPreview, setIconPreview] = useState(null);
+  const [iconFile, setIconFile] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
+  const [bannerFile, setBannerFile] = useState(null);
   const [primaryColor, setPrimaryColor] = useState("#0d6efd");
   const [secondaryColor, setSecondaryColor] = useState("#cfe2ff");
 
@@ -66,11 +70,33 @@ const SettingsPage = () => {
     if (data) {
       setSettings(data);
       setLogoPreview(data.logo);
+      setIconPreview(data.icon);
+      setBannerPreview(data.banner);
       setPrimaryColor(data.primary_color || "#0d6efd");
       setSecondaryColor(data.secondary_color || "#cfe2ff");
       setIsLoading(false);
     }
   }, [data]);
+
+  const handleIconChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setIconFile(file);
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setIconPreview(previewUrl);
+    }
+  };
+
+  const handleBannerChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setBannerFile(file);
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setBannerPreview(previewUrl);
+    }
+  };
 
   const handleSubmit = async (formData) => {
     try {
@@ -83,33 +109,69 @@ const SettingsPage = () => {
         secondary_color: secondaryColor,
       };
 
-      // Append all fields except logo
+      // Append all fields except icon, logo, and banner
       Object.keys(completeData).forEach((key) => {
-        if (key !== "logo") {
+        if (!["icon", "logo", "banner"].includes(key)) {
           formDataToSend.append(key, completeData[key]);
         }
       });
 
-      // Append logo if it exists
-      if (logoFile) {
-        formDataToSend.append("logo", logoFile);
-      } else if (data?.logo) {
-        formDataToSend.append("logo", data.logo);
+      // Append files if they exist
+      if (iconFile) {
+        formDataToSend.append("icon", iconFile);
+      } else if (settings?.icon) {
+        formDataToSend.append("icon", settings.icon);
       }
 
-      toast.promise(
-        updateHomepage(formDataToSend)
-          .unwrap()
-          .then((res) => res.message),
-        {
-          loading: "Menyimpan pengaturan...",
-          success: (message) => message,
-          error: (err) => err?.data?.message || "Gagal menyimpan pengaturan",
+      if (logoFile) {
+        formDataToSend.append("logo", logoFile);
+      } else if (settings?.logo) {
+        formDataToSend.append("logo", settings.logo);
+      }
+
+      if (bannerFile) {
+        formDataToSend.append("banner", bannerFile);
+      } else if (settings?.banner) {
+        formDataToSend.append("banner", settings.banner);
+      }
+
+      // Validate file sizes before upload
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      const files = [
+        { file: iconFile, name: "Icon" },
+        { file: logoFile, name: "Logo" },
+        { file: bannerFile, name: "Banner" },
+      ];
+
+      for (const { file, name } of files) {
+        if (file && file.size > maxSize) {
+          toast.error(`Ukuran file ${name} terlalu besar. Maksimal 2MB`);
+          return;
         }
-      );
+      }
+
+      await toast.promise(updateHomepage(formDataToSend).unwrap(), {
+        loading: "Menyimpan pengaturan...",
+        success: (response) => {
+          // Reset file states after successful update
+          setIconFile(null);
+          setLogoFile(null);
+          setBannerFile(null);
+          return "Pengaturan berhasil disimpan";
+        },
+        error: (err) => {
+          console.error("Error details:", err);
+          return err.data?.message || "Gagal menyimpan pengaturan";
+        },
+      });
+
+      // Refresh the data
+      refetch();
     } catch (error) {
       console.error("Error in handleSubmit:", error);
-      toast.error("Terjadi kesalahan saat menyimpan pengaturan");
+      toast.error(
+        error.data?.message || "Terjadi kesalahan saat menyimpan pengaturan"
+      );
     }
   };
 
@@ -117,7 +179,9 @@ const SettingsPage = () => {
     const file = e.target.files[0];
     if (file) {
       setLogoFile(file);
-      setLogoPreview(URL.createObjectURL(file));
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setLogoPreview(previewUrl);
     }
   };
 
@@ -134,7 +198,7 @@ const SettingsPage = () => {
           primary_color: color,
           secondary_color: lightColor,
         }).forEach(([key, value]) => {
-          if (key !== "logo") {
+          if (key !== "logo" && key !== "icon" && key !== "banner") {
             formDataToSend.append(key, value);
           }
         });
@@ -143,6 +207,18 @@ const SettingsPage = () => {
           formDataToSend.append("logo", logoFile);
         } else if (settings.logo) {
           formDataToSend.append("logo", settings.logo);
+        }
+        // Icon (jika ada)
+        if (iconFile) {
+          formDataToSend.append("icon", iconFile);
+        } else if (settings.icon) {
+          formDataToSend.append("icon", settings.icon);
+        }
+        // Banner (jika ada)
+        if (bannerFile) {
+          formDataToSend.append("banner", bannerFile);
+        } else if (settings.banner) {
+          formDataToSend.append("banner", settings.banner);
         }
         // Panggil updateHomepage
         await updateHomepage(formDataToSend).unwrap();
@@ -166,13 +242,24 @@ const SettingsPage = () => {
       reset();
       refetch();
       window.location.reload();
-      // Reset logo file state after successful update
+      // Reset logo, icon, and banner file states after successful update
       setLogoFile(null);
+      setIconFile(null);
+      setBannerFile(null);
     }
     if (isError) {
       reset();
     }
   }, [isSuccess, isError, msg, error, refetch, reset]);
+
+  // Cleanup preview URLs when component unmounts
+  useEffect(() => {
+    return () => {
+      if (iconPreview) URL.revokeObjectURL(iconPreview);
+      if (logoPreview) URL.revokeObjectURL(logoPreview);
+      if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+    };
+  }, []);
 
   const formFields = [
     {
@@ -275,25 +362,137 @@ const SettingsPage = () => {
                 </div>
               ) : (
                 <>
-                  <div className='mb-4'>
-                    <label className='form-label'>Logo</label>
-                    <div className='d-flex align-items-center gap-3'>
-                      <input
-                        type='file'
-                        className='form-control'
-                        accept='image/*'
-                        onChange={handleLogoChange}
-                      />
-                      {logoPreview && (
-                        <img
-                          src={logoPreview}
-                          alt='Logo preview'
-                          style={{ maxHeight: "100px", objectFit: "contain" }}
-                          className='border rounded p-2'
-                        />
-                      )}
+                  <div className='d-flex flex-wrap gap-4 mb-4'>
+                    <div className='flex-grow-1 min-width-300'>
+                      <label className='form-label fw-bold mb-3'>
+                        Icon Website
+                      </label>
+                      <div className='d-flex flex-column gap-3'>
+                        <div className='image-preview-container bg-light rounded p-3 text-center'>
+                          {iconPreview ? (
+                            <img
+                              src={iconPreview}
+                              alt='Icon preview'
+                              style={{
+                                width: "80px",
+                                height: "80px",
+                                objectFit: "contain",
+                              }}
+                              className='mb-3'
+                            />
+                          ) : (
+                            <div className='placeholder-image mb-3'>
+                              <FaCog className='fs-1 text-secondary' />
+                            </div>
+                          )}
+                          <input
+                            type='file'
+                            className='form-control'
+                            accept='image/*'
+                            onChange={handleIconChange}
+                          />
+                        </div>
+                        <small className='text-muted'>
+                          Unggah icon website dengan ukuran yang disarankan
+                          32x32 pixel
+                        </small>
+                      </div>
+                    </div>
+
+                    <div className='flex-grow-1 min-width-300'>
+                      <label className='form-label fw-bold mb-3'>
+                        Logo Website
+                      </label>
+                      <div className='d-flex flex-column gap-3'>
+                        <div className='image-preview-container bg-light rounded p-3 text-center'>
+                          {logoPreview ? (
+                            <img
+                              src={logoPreview}
+                              alt='Logo preview'
+                              style={{
+                                height: "100px",
+                                maxWidth: "300px",
+                                objectFit: "contain",
+                              }}
+                              className='mb-3'
+                            />
+                          ) : (
+                            <div className='placeholder-image mb-3'>
+                              <FaCog className='fs-1 text-secondary' />
+                            </div>
+                          )}
+                          <input
+                            type='file'
+                            className='form-control'
+                            accept='image/*'
+                            onChange={handleLogoChange}
+                          />
+                        </div>
+                        <small className='text-muted'>
+                          Unggah logo website dengan ukuran yang disarankan
+                          200x50 pixel
+                        </small>
+                      </div>
+                    </div>
+
+                    <div className='flex-grow-1 min-width-300'>
+                      <label className='form-label fw-bold mb-3'>
+                        Banner Website
+                      </label>
+                      <div className='d-flex flex-column gap-3'>
+                        <div className='image-preview-container bg-light rounded p-3 text-center'>
+                          {bannerPreview ? (
+                            <img
+                              src={bannerPreview}
+                              alt='Banner preview'
+                              style={{
+                                width: "100%",
+                                height: "150px",
+                                objectFit: "cover",
+                              }}
+                              className='mb-3'
+                            />
+                          ) : (
+                            <div className='placeholder-image mb-3'>
+                              <FaCog className='fs-1 text-secondary' />
+                            </div>
+                          )}
+                          <input
+                            type='file'
+                            className='form-control'
+                            accept='image/*'
+                            onChange={handleBannerChange}
+                          />
+                        </div>
+                        <small className='text-muted'>
+                          Unggah banner website dengan ukuran yang disarankan
+                          1920x400 pixel
+                        </small>
+                      </div>
                     </div>
                   </div>
+
+                  <style jsx>{`
+                    .min-width-300 {
+                      min-width: 300px;
+                    }
+                    .image-preview-container {
+                      min-height: 200px;
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                      align-items: center;
+                    }
+                    .placeholder-image {
+                      width: 80px;
+                      height: 80px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      color: #6c757d;
+                    }
+                  `}</style>
+
                   <CmsForm
                     fields={formFields}
                     initialValues={settings}

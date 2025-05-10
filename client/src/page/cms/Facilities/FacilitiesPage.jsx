@@ -12,7 +12,7 @@ import {
 import { toast } from "react-hot-toast";
 import Table from "../../../components/table/Table";
 
-const FacilitiesPage = () => {
+const FacilitiesPage = ({ homepage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("add");
   const [selectedFacility, setSelectedFacility] = useState(null);
@@ -27,7 +27,6 @@ const FacilitiesPage = () => {
     search,
   });
   const { results: facilities, totalData, totalPage } = data || {};
-  console.log(data);
 
   const [
     addFacility,
@@ -135,12 +134,19 @@ const FacilitiesPage = () => {
           transition={{ duration: 0.5 }}>
           <div className='d-flex justify-content-between align-items-center mb-2'>
             <div className='d-flex align-items-center'>
-              <div className='bg-primary bg-opacity-10 p-3 rounded me-3'>
-                <i className='bi bi-building text-primary fs-4'></i>
+              <div
+                className='p-3 rounded me-3'
+                style={{
+                  color: homepage?.primary_color,
+                  backgroundColor: homepage?.secondary_color,
+                }}>
+                <i className='bi bi-building fs-4'></i>
               </div>
               <h4 className='mb-0'>Fasilitas</h4>
             </div>
-            <button className='btn btn-sm btn-primary' onClick={handleAdd}>
+            <button
+              className='btn btn-sm btn-outline-primary'
+              onClick={handleAdd}>
               <i className='bi bi-plus-circle'></i>
               <span className='ms-2'>Tambah Fasilitas</span>
             </button>

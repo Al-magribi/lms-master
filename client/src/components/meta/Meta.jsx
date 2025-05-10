@@ -6,8 +6,8 @@ const Meta = ({ title, desc, favicon }) => {
     <HelmetProvider>
       <Helmet>
         <title>{title}</title>
-        <meta name="description" content={desc} />
-        <link rel="icon" type="image/svg+xml" href={favicon || "/logo.png"} />
+        <meta name='description' content={desc} />
+        <link rel='icon' type='image/svg+xml' href={favicon || "/logo.png"} />
       </Helmet>
     </HelmetProvider>
   );

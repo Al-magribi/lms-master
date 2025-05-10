@@ -15,7 +15,7 @@ import { toast } from "react-hot-toast";
 import { useGetCategoryQuery } from "../../../controller/api/cms/ApiCategory";
 import DetailNews from "./DetailNews";
 
-const NewsPage = () => {
+const NewsPage = ({ homepage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("add");
   const [selectedNews, setSelectedNews] = useState(null);
@@ -187,28 +187,34 @@ const NewsPage = () => {
   }
 
   return (
-    <Layout title="Berita" levels={["cms"]}>
-      <div className="container-fluid py-3 py-md-4">
+    <Layout title='Berita' levels={["cms"]}>
+      <div className='container-fluid py-3 py-md-4'>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <div className="d-flex align-items-center">
-              <div className="bg-primary bg-opacity-10 p-3 rounded me-3">
-                <FaNewspaper className="text-primary fs-4" />
+          transition={{ duration: 0.5 }}>
+          <div className='d-flex justify-content-between align-items-center mb-2'>
+            <div className='d-flex align-items-center'>
+              <div
+                className='p-3 rounded me-3'
+                style={{
+                  color: homepage?.primary_color,
+                  backgroundColor: homepage?.secondary_color,
+                }}>
+                <FaNewspaper className='fs-4' />
               </div>
-              <h4 className="mb-0">Berita</h4>
+              <h4 className='mb-0'>Berita</h4>
             </div>
-            <button className="btn btn-sm btn-primary" onClick={handleAdd}>
-              <i className="bi bi-plus-circle"></i>
-              <span className="ms-2">Tambah Berita</span>
+            <button
+              className='btn btn-sm btn-outline-primary'
+              onClick={handleAdd}>
+              <i className='bi bi-plus-circle'></i>
+              <span className='ms-2'>Tambah Berita</span>
             </button>
           </div>
 
-          <div className="card border-0 shadow-sm">
-            <div className="card-body">
+          <div className='card border-0 shadow-sm'>
+            <div className='card-body'>
               <Table
                 isLoading={isLoading}
                 page={page}
@@ -217,53 +223,49 @@ const NewsPage = () => {
                 limit={limit}
                 setLimit={setLimit}
                 setSearch={setSearch}
-                totalData={totalData}
-              >
-                <table className="mb-0 table table-bordered table-striped table-hover">
+                totalData={totalData}>
+                <table className='mb-0 table table-bordered table-striped table-hover'>
                   <thead>
                     <tr>
-                      <th className="text-center align-middle">No</th>
-                      <th className="text-center align-middle">Judul</th>
-                      <th className="text-center align-middle">Kategori</th>
-                      <th className="text-center align-middle">
+                      <th className='text-center align-middle'>No</th>
+                      <th className='text-center align-middle'>Judul</th>
+                      <th className='text-center align-middle'>Kategori</th>
+                      <th className='text-center align-middle'>
                         Tanggal Dibuat
                       </th>
-                      <th className="text-center align-middle">Aksi</th>
+                      <th className='text-center align-middle'>Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
                     {news?.map((item, index) => (
                       <tr key={item.id}>
-                        <td className="text-center align-middle">
+                        <td className='text-center align-middle'>
                           {(page - 1) * limit + index + 1}
                         </td>
-                        <td className="align-middle">{item.title}</td>
-                        <td className="text-center align-middle">
+                        <td className='align-middle'>{item.title}</td>
+                        <td className='text-center align-middle'>
                           {item.category_name}
                         </td>
-                        <td className="text-center align-middle">
+                        <td className='text-center align-middle'>
                           {new Date(item.createdat).toLocaleDateString()}
                         </td>
-                        <td className="text-center align-middle">
-                          <div className="d-flex align-items-center justify-content-center gap-2">
+                        <td className='text-center align-middle'>
+                          <div className='d-flex align-items-center justify-content-center gap-2'>
                             <button
-                              className="btn btn-sm btn-info"
-                              title="Lihat Detail"
-                              onClick={() => handleView(item)}
-                            >
-                              <i className="bi bi-eye"></i>
+                              className='btn btn-sm btn-info'
+                              title='Lihat Detail'
+                              onClick={() => handleView(item)}>
+                              <i className='bi bi-eye'></i>
                             </button>
                             <button
-                              className="btn btn-sm btn-warning"
-                              onClick={() => handleEdit(item)}
-                            >
-                              <i className="bi bi-pencil-square"></i>
+                              className='btn btn-sm btn-warning'
+                              onClick={() => handleEdit(item)}>
+                              <i className='bi bi-pencil-square'></i>
                             </button>
                             <button
-                              className="btn btn-sm btn-danger"
-                              onClick={() => handleDelete(item.id)}
-                            >
-                              <i className="bi bi-trash"></i>
+                              className='btn btn-sm btn-danger'
+                              onClick={() => handleDelete(item.id)}>
+                              <i className='bi bi-trash'></i>
                             </button>
                           </div>
                         </td>
@@ -281,8 +283,7 @@ const NewsPage = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={modalType === "add" ? "Tambah Berita" : "Edit Berita"}
-        size="lg"
-      >
+        size='lg'>
         <CmsForm
           key={formKey}
           fields={formFields}
@@ -298,16 +299,15 @@ const NewsPage = () => {
           submitButtonText={
             modalType === "add" ? "Tambah Berita" : "Ubah Berita"
           }
-          cancelButtonText="Batal"
-          isLoading={addLoading}
-        >
-          <div className="mb-3">
-            <label className="form-label">Konten</label>
+          cancelButtonText='Batal'
+          isLoading={addLoading}>
+          <div className='mb-3'>
+            <label className='form-label'>Konten</label>
             <Editor
               value={content}
               onChange={setContent}
-              placeholder="Masukkan konten berita..."
-              height="400px"
+              placeholder='Masukkan konten berita...'
+              height='400px'
             />
           </div>
         </CmsForm>

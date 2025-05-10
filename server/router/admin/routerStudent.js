@@ -72,12 +72,67 @@ router.post("/upload-students", authorize("admin"), async (req, res) => {
 
     await client.query("BEGIN");
 
+    const periode = await client.query(
+      `SELECT * FROM a_periode WHERE isactive = true AND homebase = $1`,
+      [homebase]
+    );
+
+    const activePeriode = periode.rows[0].id;
+
+    // Check for duplicate NIS in the database
+    const existingStudents = await client.query(
+      `SELECT nis, name FROM u_students WHERE homebase = $1 AND isactive = true`,
+      [homebase]
+    );
+
+    const existingNIS = new Set(
+      existingStudents.rows.map((student) => student.nis)
+    );
+    const duplicates = [];
+
+    // Check for duplicates in the upload data
+    for (const student of students) {
+      const nis = student[1];
+      const name = student[2];
+
+      if (existingNIS.has(nis)) {
+        const existingStudent = existingStudents.rows.find(
+          (s) => s.nis === nis
+        );
+        duplicates.push({
+          nis,
+          name,
+          existingName: existingStudent.name,
+        });
+      }
+    }
+
+    if (duplicates.length > 0) {
+      await client.query("ROLLBACK");
+      return res.status(400).json({
+        message: "Terdapat NIS yang sudah terdaftar",
+        duplicates: duplicates.map((d) => ({
+          nis: d.nis,
+          name: d.name,
+          existingName: d.existingName,
+        })),
+      });
+    }
+
     await Promise.all(
       students.map(async (student) => {
         await client.query(
-          `INSERT INTO u_students(homebase, entry, nis, name, gender, password)
-					VALUES($1, $2, $3, $4, $5, $6)`,
-          [homebase, student[0], student[1], student[2], student[3], hash]
+          `INSERT INTO u_students(homebase, entry, nis, name, gender, password, periode)
+					VALUES($1, $2, $3, $4, $5, $6, $7)`,
+          [
+            homebase,
+            student[0],
+            student[1],
+            student[2],
+            student[3],
+            hash,
+            activePeriode,
+          ]
         );
       })
     );

@@ -51,22 +51,7 @@ const CenterSetting = () => {
         variants={containerVariants}
         initial='hidden'
         animate='visible'>
-        <div className='row g-4 justify-content-center'>
-          <motion.div
-            className='col-xl-6 col-lg-8 col-12'
-            variants={itemVariants}>
-            <div className='card border-0 h-100 shadow-sm hover-shadow-lg transition-all'>
-              <div className='card-header bg-primary-subtle border-0 py-3'>
-                <h5 className='card-title mb-0 text-primary fw-semibold'>
-                  Pengaturan Aplikasi
-                </h5>
-              </div>
-              <div className='card-body'>
-                <AppSetting app={app} />
-              </div>
-            </div>
-          </motion.div>
-
+        <div className='row g-4'>
           <motion.div
             className='col-xl-6 col-lg-8 col-12'
             variants={itemVariants}>
@@ -93,6 +78,21 @@ const CenterSetting = () => {
               </div>
               <div className='card-body'>
                 <Profile admin={admin} />
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className='col-xl-6 col-lg-8 col-12'
+            variants={itemVariants}>
+            <div className='card border-0 h-100 shadow-sm hover-shadow-lg transition-all'>
+              <div className='card-header bg-primary-subtle border-0 py-3'>
+                <h5 className='card-title mb-0 text-primary fw-semibold'>
+                  Pengaturan Aplikasi
+                </h5>
+              </div>
+              <div className='card-body'>
+                <AppSetting app={app} />
               </div>
             </div>
           </motion.div>

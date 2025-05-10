@@ -8,8 +8,8 @@ import { setLogin } from "./controller/slice/AuthSlice";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import LoadingScreen from "./components/loader/LoadingScreen";
-import { useGetAppQuery } from "./controller/api/center/ApiApp";
 import Homepage from "./home/Homepage";
+import { useGetHomepageQuery } from "./controller/api/cms/ApiHomepage";
 
 // Otentikasi
 const Activation = lazy(() => import("./components/auth/Activation"));
@@ -121,23 +121,8 @@ const DbList = lazy(() => import("./page/Database/DbList"));
 function App() {
   const dispatch = useDispatch();
   const [loadUser] = useLoadUserMutation();
-  const { data: appData } = useGetAppQuery();
-
-  // Update favicon when app.logo is available
-  useEffect(() => {
-    if (appData?.logo) {
-      const favicon = document.querySelector("link[rel='icon']");
-      if (favicon) {
-        favicon.href = appData.logo;
-      } else {
-        const newFavicon = document.createElement("link");
-        newFavicon.rel = "icon";
-        newFavicon.type = "image/svg+xml";
-        newFavicon.href = appData.logo;
-        document.head.appendChild(newFavicon);
-      }
-    }
-  }, [appData]);
+  const { data: homepage, isLoading: isLoadingHomepage } =
+    useGetHomepageQuery();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -170,17 +155,25 @@ function App() {
       <BrowserRouter>
         <Toaster />
         <Meta
-          title={"Nuraida Islamic Boarding School"}
-          desc={
-            "Nuraida Islamic Boarding School adalah sekolah yang berdedikasi untuk pendidikan Islam yang berkualitas tinggi."
-          }
-          favicon={appData?.logo}
+          title={homepage?.name}
+          desc={homepage?.description}
+          favicon={homepage?.icon}
         />
-        <Suspense fallback={<LoadingScreen logo={appData?.logo} />}>
+        <Suspense fallback={<LoadingScreen logo={homepage?.icon} />}>
           <Routes>
-            <Route path='*' element={<Homepage />} />
+            <Route
+              path='*'
+              element={
+                <Homepage data={homepage} isLoading={isLoadingHomepage} />
+              }
+            />
 
-            <Route path='/' element={<Homepage />} />
+            <Route
+              path='/'
+              element={
+                <Homepage data={homepage} isLoading={isLoadingHomepage} />
+              }
+            />
 
             <Route path='/berita' element={<News />} />
 
@@ -189,23 +182,33 @@ function App() {
             {/* Otentikasi */}
             <Route path='/aktivasi-akun/:code' element={<Activation />} />
 
-            <Route path='/signin' element={<Signin />} />
+            <Route path='/signin' element={<Signin data={homepage} />} />
 
             {/* CMS */}
 
             <Route path='/cms-dashboard' element={<CmsDash />} />
 
-            <Route path='/cms-news' element={<CmsNews />} />
+            <Route path='/cms-news' element={<CmsNews homepage={homepage} />} />
 
-            <Route path='/cms-reason' element={<CmsReasons />} />
+            <Route
+              path='/cms-reason'
+              element={<CmsReasons homepage={homepage} />}
+            />
 
-            <Route path='/cms-facility' element={<CmsFacilities />} />
+            <Route
+              path='/cms-facility'
+              element={<CmsFacilities homepage={homepage} />}
+            />
 
-            <Route path='/cms-testimoni' element={<CmsTestimonials />} />
+            <Route
+              path='/cms-testimoni'
+              element={<CmsTestimonials homepage={homepage} />}
+            />
 
-            <Route path='/cms-graduation' element={<CmsGraduation />} />
-
-            <Route path='/cms-category' element={<CmsCategories />} />
+            <Route
+              path='/cms-category'
+              element={<CmsCategories homepage={homepage} />}
+            />
 
             <Route path='/cms-settings' element={<CmsSettings />} />
 
@@ -241,7 +244,10 @@ function App() {
 
             <Route path='/admin-kelas' element={<AdminClass />} />
 
-            <Route path='/admin-mapel' element={<AdminSubject />} />
+            <Route
+              path='/admin-mapel'
+              element={<AdminSubject homepage={homepage} />}
+            />
 
             <Route path='/admin-cbt-bank' element={<AdminCbt />} />
 

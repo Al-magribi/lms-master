@@ -66,11 +66,14 @@ const Form = ({ detail, setDetail }) => {
       <div className='d-flex justify-content-end gap-2'>
         <button
           type='button'
-          className='btn btn-warning'
+          className='btn btn-sm btn-warning'
           onClick={() => setDetail({})}>
           Batal
         </button>
-        <button type='submit' className='btn btn-success' disabled={isLoading}>
+        <button
+          type='submit'
+          className='btn btn-sm btn-success'
+          disabled={isLoading}>
           Simpan
         </button>
       </div>

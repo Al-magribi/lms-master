@@ -1,2 +1,0 @@
-import{j as t}from"./index-DFhdulld.js";import{L as e}from"./Layout-GZnRoUIy.js";import{C as s}from"./CbtExam-Bs6NDpH5.js";import"./vendor-CnnDPxwB.js";import"./index-B8CuzAwO.js";import"./index-g0LoU_Ie.js";import"./react-select.esm-C351JJ6e.js";import"./Table-CpyGbvYh.js";const r=()=>t.jsx(e,{title:"Daftar Ujian",levels:["teacher"],children:t.jsx(s,{})});export{r as default};
-//# sourceMappingURL=TeacherExam-BRVVTPrR.js.map

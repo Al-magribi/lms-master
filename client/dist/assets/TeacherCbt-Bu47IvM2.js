@@ -1,0 +1,2 @@
+import{j as e}from"./index-DAvLbB94.js";import{L as s}from"./Layout-BDsu45_O.js";import{C as t}from"./CbtBank-C8P4dTC9.js";import"./vendor-CnnDPxwB.js";import"./index-B8CuzAwO.js";import"./index-g0LoU_Ie.js";import"./react-select.esm-C351JJ6e.js";import"./index-CyJYIQ-o.js";import"./index-Bx5UHif0.js";import"./Table-BVJYUMLF.js";const r=()=>e.jsx(s,{title:"Guru Bank Soal",levels:["teacher"],children:e.jsx(t,{})});export{r as default};
+//# sourceMappingURL=TeacherCbt-Bu47IvM2.js.map

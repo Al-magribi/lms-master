@@ -86,7 +86,7 @@ const Layout = ({ children, title, desc, levels }) => {
           window.location.href = "/signin";
         }
       }
-    }, 500);
+    }, 2000);
 
     return () => clearTimeout(timeout);
   }, [user, isSignin, levels]);
